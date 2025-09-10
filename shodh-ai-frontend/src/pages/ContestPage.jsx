@@ -1,14 +1,31 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function ContestPage() {
   const { contestId } = useParams();
   const navigate = useNavigate();
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const questions = [
-    { id: 1, title: "Two Sum" },
-    { id: 2, title: "Reverse String" },
-    { id: 3, title: "Binary Search" },
-  ];
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/problems/contest/${contestId}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch problems");
+        return res.json();
+      })
+      .then((data) => {
+        setQuestions(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [contestId]);
+
+  if (loading) return <p className="text-gray-500">Loading problems...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

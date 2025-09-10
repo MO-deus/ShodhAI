@@ -5,6 +5,7 @@ import com.example.shodh_ai_backend.repository.ContestRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,5 +25,12 @@ public class ContestController {
         Optional<Contest> contest = contestRepository.findById(contestId);
         return contest.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // GET /api/contests
+    @GetMapping
+    public ResponseEntity<List<Contest>> getAllContests() {
+        List<Contest> contests = contestRepository.findAll();
+        return ResponseEntity.ok(contests);
     }
 }
