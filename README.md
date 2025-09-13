@@ -19,7 +19,6 @@ Shodh AI is a full-stack online coding contest platform where users can register
   - [Setup Instructions](#setup-instructions-1)
   - [Frontend](#frontend)
   - [Backend](#backend)
-  - [Database](#database)
   - [API Design](#api-design)
     - [Contests](#contests)
       - [Get all contests](#get-all-contests)
@@ -94,7 +93,6 @@ Shodh AI is a full-stack online coding contest platform where users can register
   - [Setup Instructions](#setup-instructions-1)
   - [Frontend](#frontend)
   - [Backend](#backend)
-  - [Database](#database)
   - [API Design](#api-design)
     - [Contests](#contests)
       - [Get all contests](#get-all-contests)
@@ -182,18 +180,8 @@ npm start
 
 ## Backend
 
-If running without Docker:
-
-```bash
-./mvnw spring-boot:run
-```
-
----
-
-## Database
-
-- When using Docker, the database schema will be automatically created using `schema.sql`.  
-- If running PostgreSQL manually, execute the SQL scripts provided.  
+Must have : jdk-24 and IntelliJ IDE
+run the main through IntelliJ
 
 ---
 
@@ -338,14 +326,13 @@ Returns the status of a specific submission.
 
 ### Docker Orchestration
 
-- Single `docker-compose.yml` handles backend, frontend, and database.  
+- Single `docker-compose.yml` handles online judge.  
 
 ---
 
 ### Trade-offs
 
 - PostgreSQL persists data using a volume; resets when volume is deleted.  
-- Using docker-compose simplifies local setup but may require manual port mapping on conflicting ports.  
 
 ---
 
