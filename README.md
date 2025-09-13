@@ -140,7 +140,7 @@ Shodh AI allows developers to:
 
 - Docker & Docker Compose installed  
 - Node.js >= 18  
-- Java 17+ (for Spring Boot backend)  
+- Java 24 (for Spring Boot backend)  
 - PostgreSQL (if running outside Docker)  
 
 ---
@@ -152,12 +152,6 @@ Shodh AI allows developers to:
 ```bash
 git clone <repo-url>
 cd <repo-directory>
-```
-
-2. Run with Docker Compose:
-
-```bash
-docker-compose up --build
 ```
 
 This will start:
