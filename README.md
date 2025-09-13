@@ -2,115 +2,6 @@
 
 Shodh AI is a full-stack online coding contest platform where users can register, join contests, solve problems in multiple languages, submit solutions, and view real-time leaderboards.
 
----
-
-## Table of Contents
-- [Shodh AI – Online Coding Contest Platform](#shodh-ai--online-coding-contest-platform)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Setup Instructions](#setup-instructions)
-    - [Prerequisites](#prerequisites)
-    - [Steps](#steps)
-- [Shodh AI – Online Coding Contest Platform](#shodh-ai--online-coding-contest-platform-1)
-  - [Table of Contents](#table-of-contents-1)
-  - [Overview](#overview-1)
-  - [Features](#features)
-  - [Prerequisites](#prerequisites-1)
-  - [Setup Instructions](#setup-instructions-1)
-  - [Frontend](#frontend)
-  - [Backend](#backend)
-  - [API Design](#api-design)
-    - [Contests](#contests)
-      - [Get all contests](#get-all-contests)
-      - [Get contest by ID](#get-contest-by-id)
-      - [Get contest leaderboard](#get-contest-leaderboard)
-    - [Problems](#problems)
-      - [Get all problems in a contest](#get-all-problems-in-a-contest)
-      - [Get a problem by ID](#get-a-problem-by-id)
-      - [Submit a solution](#submit-a-solution)
-    - [Submissions](#submissions)
-      - [Get a submission by ID](#get-a-submission-by-id)
-  - [Design Choices \& Justification](#design-choices--justification)
-    - [Backend](#backend-1)
-    - [Frontend](#frontend-1)
-    - [Docker Orchestration](#docker-orchestration)
-    - [Trade-offs](#trade-offs)
-  - [Challenges](#challenges)
-  - [Database Schema](#database-schema)
-
----
-
-## Overview
-
-Shodh AI allows users to:
-- Register and join contests
-- Solve coding problems in multiple programming languages
-- Submit solutions for evaluation
-- View real-time contest leaderboards
-
----
-
-## Setup Instructions
-
-### Prerequisites
-- Docker & Docker Compose installed
-- Node.js >= 18
-- Java 17+ (for Spring Boot backend)
-- PostgreSQL (if running outside Docker)
-
-### Steps
-```bash
-git clone <repo-url>
-cd <repo-directory>
-
-### frontend
-cd frontend
-npm install
-npm start
-
-### backend
-```
-
-# Shodh AI – Online Coding Contest Platform
-
-Shodh AI is a full-stack online coding contest platform where users can register, join contests, solve problems in multiple languages, submit solutions, and view real-time leaderboards.
-
----
-
-## Table of Contents
-
-- [Shodh AI – Online Coding Contest Platform](#shodh-ai--online-coding-contest-platform)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Setup Instructions](#setup-instructions)
-    - [Prerequisites](#prerequisites)
-    - [Steps](#steps)
-- [Shodh AI – Online Coding Contest Platform](#shodh-ai--online-coding-contest-platform-1)
-  - [Table of Contents](#table-of-contents-1)
-  - [Overview](#overview-1)
-  - [Features](#features)
-  - [Prerequisites](#prerequisites-1)
-  - [Setup Instructions](#setup-instructions-1)
-  - [Frontend](#frontend)
-  - [Backend](#backend)
-  - [API Design](#api-design)
-    - [Contests](#contests)
-      - [Get all contests](#get-all-contests)
-      - [Get contest by ID](#get-contest-by-id)
-      - [Get contest leaderboard](#get-contest-leaderboard)
-    - [Problems](#problems)
-      - [Get all problems in a contest](#get-all-problems-in-a-contest)
-      - [Get a problem by ID](#get-a-problem-by-id)
-      - [Submit a solution](#submit-a-solution)
-    - [Submissions](#submissions)
-      - [Get a submission by ID](#get-a-submission-by-id)
-  - [Design Choices \& Justification](#design-choices--justification)
-    - [Backend](#backend-1)
-    - [Frontend](#frontend-1)
-    - [Docker Orchestration](#docker-orchestration)
-    - [Trade-offs](#trade-offs)
-  - [Challenges](#challenges)
-  - [Database Schema](#database-schema)
 
 ---
 
@@ -138,10 +29,9 @@ Shodh AI allows developers to:
 
 ## Prerequisites
 
-- Docker & Docker Compose installed  
 - Node.js >= 18  
 - Java 24 (for Spring Boot backend)  
-- PostgreSQL (if running outside Docker)  
+- PostgreSQL  
 
 ---
 
@@ -157,7 +47,7 @@ cd <repo-directory>
 This will start:
 
 - Spring Boot backend → [http://localhost:8080](http://localhost:8080)  
-- React frontend → [http://localhost:3000](http://localhost:3000)  
+- React frontend → [http://localhost:5173](http://localhost:5173)  
 - PostgreSQL database
 
 ---
@@ -176,6 +66,10 @@ npm start
 
 Must have : jdk-24 and IntelliJ IDE
 run the main through IntelliJ
+
+## online judge
+hosted on : https://online-judge-egds.onrender.com
+github repo : https://github.com/MO-deus/online-judge
 
 ---
 
