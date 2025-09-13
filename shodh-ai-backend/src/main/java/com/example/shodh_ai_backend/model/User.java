@@ -1,6 +1,8 @@
 package com.example.shodh_ai_backend.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -13,17 +15,20 @@ public class User {
 
     private String username;
     private String email;
-    private UUID contestId;
+
+    // ✅ Submissions relationship (using foreign key join)
+    @OneToMany
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private List<Submission> submissions = new ArrayList<>();
 
     public User() {}
 
-    public User(String username, String email, UUID contestId) {
+    public User(String username, String email) {
         this.username = username;
         this.email = email;
-        this.contestId = contestId;
     }
 
-    // getters and setters
+    // Getters and setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
 
@@ -33,6 +38,6 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public UUID getContestId() { return contestId; }
-    public void setContestId(UUID contestId) { this.contestId = contestId; }
+    public List<Submission> getSubmissions() { return submissions; }
+    public void setSubmissions(List<Submission> submissions) { this.submissions = submissions; }
 }

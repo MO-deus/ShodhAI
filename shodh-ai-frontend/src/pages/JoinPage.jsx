@@ -30,36 +30,43 @@ export default function JoinPage() {
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // ✅ Check if contest exists
-    const contestExists = contests.some((c) => c.id === contestId);
-    if (!contestExists) {
-      setError("Invalid Contest ID. Please select a valid contest.");
-      return;
-    }
+  try {
+    // Step 1: Create or fetch user
+    const resUser = await fetch("http://localhost:8080/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email }),
+    });
 
-    try {
-      const res = await fetch("http://localhost:8080/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          contestId,
-        }),
-      });
+    if (!resUser.ok) throw new Error("Failed to register user");
+    const user = await resUser.json(); // ✅ contains user.id
 
-      if (!res.ok) throw new Error("Failed to register user");
+    // Step 2: Join contest
+    const resParticipant = await fetch("http://localhost:8080/api/contest-participants", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: user.id,
+        contestId,
+      }),
+    });
 
-      navigate(`/contest/${contestId}`);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+    if (!resParticipant.ok) throw new Error("Failed to join contest");
+    const participant = await resParticipant.json(); // ✅ either existing or new
+
+    console.log("Joined contest:", participant);
+
+    // Step 3: Navigate to contest page
+    navigate(`/contest/${contestId}`);
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
+
 
 
   return (

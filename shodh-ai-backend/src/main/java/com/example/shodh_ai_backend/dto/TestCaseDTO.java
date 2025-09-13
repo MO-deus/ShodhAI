@@ -10,6 +10,8 @@ public class TestCaseDTO {
     public TestCaseDTO(String input, String expectedOutput) {
         this.input = input;
         this.expectedOutput = expectedOutput;
+        System.out.println(input);
+        System.out.println(input);
     }
 
     public String getInput() {
@@ -19,4 +21,8 @@ public class TestCaseDTO {
     public String getExpectedOutput() {
         return expectedOutput;
     }
+
+    public void setInput(String input) { this.input = input; }
+    public void setExpectedOutput(String expectedOutput) { this.expectedOutput = expectedOutput; }
+
 }

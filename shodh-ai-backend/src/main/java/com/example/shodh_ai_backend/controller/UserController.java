@@ -17,8 +17,17 @@ public class UserController {
 
     // POST /api/users
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createOrGetUser(@RequestBody User user) {
+        // Check by unique fields (username or email)
+        User existingUser = userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail());
+        if (existingUser != null) {
+            // User already exists, return it
+            return ResponseEntity.ok(existingUser);
+        }
+
+        // Otherwise, create a new user
         User savedUser = userRepository.save(user);
         return ResponseEntity.ok(savedUser);
     }
+
 }

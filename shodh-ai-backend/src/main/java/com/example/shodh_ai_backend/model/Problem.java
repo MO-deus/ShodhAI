@@ -28,6 +28,9 @@ public class Problem {
     @Column(name = "test_cases", columnDefinition = "TEXT")
     private String testCases;
 
+    @Column(name = "boiler_plate_code", columnDefinition = "TEXT")
+    private String boilerPlateCode;
+
     // Relationship to contests
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contest_id", nullable = false)
@@ -82,5 +85,11 @@ public class Problem {
 
     public void setTestCases(String testCases) { this.testCases = testCases; }
 
+    public String getBoilerPlateCode() {
+        return boilerPlateCode;
+    }
 
+    public void setBoilerPlateCode(String boilerPlateCode) {
+        this.boilerPlateCode = boilerPlateCode;
+    }
 }

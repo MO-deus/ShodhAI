@@ -5,6 +5,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
 import { cpp } from "@codemirror/lang-cpp";
+import { Compartment } from "@codemirror/state";
 
 const languageExtensions = {
     javascript: javascript(),
@@ -15,7 +16,10 @@ const languageExtensions = {
 
 export default function CodeEditor({ language = "javascript", code = "", onChange }) {
     const editorRef = useRef();
+    const viewRef = useRef();
+    const langCompartment = useRef(new Compartment());
 
+    // Initialize editor
     useEffect(() => {
         if (!editorRef.current) return;
 
@@ -23,23 +27,50 @@ export default function CodeEditor({ language = "javascript", code = "", onChang
             doc: code,
             extensions: [
                 basicSetup,
-                languageExtensions[language] || javascript(),
+                langCompartment.current.of(languageExtensions[language] || javascript()),
                 EditorView.updateListener.of((v) => {
                     if (v.docChanged) {
-                        const doc = v.state.doc.toString();
-                        onChange?.(doc);
+                        onChange?.(v.state.doc.toString());
                     }
                 }),
             ],
         });
 
-        const view = new EditorView({
+        viewRef.current = new EditorView({
             state,
             parent: editorRef.current,
         });
 
-        return () => view.destroy();
-    }, [language]); // reinitialize when language changes
+        return () => viewRef.current.destroy();
+    }, []); // only once
 
-    return <div ref={editorRef} className="h-80 border rounded-lg" />;
+    // Update language dynamically
+    useEffect(() => {
+        if (viewRef.current) {
+            viewRef.current.dispatch({
+                effects: langCompartment.current.reconfigure(
+                    languageExtensions[language] || javascript()
+                ),
+            });
+        }
+    }, [language]);
+
+    // Update code from parent
+    useEffect(() => {
+        if (viewRef.current) {
+            const currentCode = viewRef.current.state.doc.toString();
+            if (code !== currentCode) {
+                viewRef.current.dispatch({
+                    changes: { from: 0, to: currentCode.length, insert: code },
+                });
+            }
+        }
+    }, [code]);
+
+    return (
+        <div
+            ref={editorRef}
+            className="h-96 border rounded-lg overflow-y-auto bg-gray-50"
+        />
+    );
 }
