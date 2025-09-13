@@ -27,6 +27,9 @@ export default function ContestPage() {
   if (loading) return <p className="text-gray-500">Loading problems...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
+  console.log(contestId);
+  
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <button
@@ -49,6 +52,10 @@ export default function ContestPage() {
           </Link>
         ))}
       </div>
+
+      <Link to={`/contest/${contestId}/leaderboard`}>
+        View Leaderboard
+      </Link>
     </div>
   );
 }
