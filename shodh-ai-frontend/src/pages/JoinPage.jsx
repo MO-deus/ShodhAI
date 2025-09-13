@@ -6,8 +6,10 @@ export default function JoinPage() {
   const [email, setEmail] = useState("");
   const [contestId, setContestId] = useState("");
   const [contests, setContests] = useState([]);
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [simpleIdMap, setSimpleIdMap] = useState({}); // simpleId -> real UUID
+  const [selectedSimpleId, setSelectedSimpleId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +21,16 @@ export default function JoinPage() {
       .then((data) => {
         setContests(data);
         setLoading(false);
+
+        const map = {};
+        const contestsWithSimple = data.map((contest, idx) => {
+          const simpleId = (idx + 1).toString(); // 1, 2, 3...
+          map[simpleId] = contest.id;
+          return { ...contest, simpleId };
+        });
+
+        setContests(contestsWithSimple);
+        setSimpleIdMap(map);
       })
       .catch((err) => {
         setError(err.message);
@@ -26,99 +38,90 @@ export default function JoinPage() {
       });
   }, []);
 
-  if (loading) return <p className="text-gray-500">Loading contests...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const contestId = simpleIdMap[selectedSimpleId];
+    console.log(selectedSimpleId);
 
+    if (!contestId) return alert("Invalid contest ID");
+    try {
+      const resUser = await fetch("http://localhost:8080/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email }),
+      });
+      if (!resUser.ok) throw new Error("Failed to register user");
+      const user = await resUser.json();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+      const resParticipant = await fetch("http://localhost:8080/api/contest-participants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, contestId }),
+      });
+      if (!resParticipant.ok) throw new Error("Failed to join contest");
+      const participant = await resParticipant.json();
 
-  try {
-    // Step 1: Create or fetch user
-    const resUser = await fetch("http://localhost:8080/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email }),
-    });
+      localStorage.removeItem("participant");
+      localStorage.setItem("participant", JSON.stringify(participant));
+      navigate(`/contest/${contestId}`);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-    if (!resUser.ok) throw new Error("Failed to register user");
-    const user = await resUser.json(); // ✅ contains user.id
-
-    // Step 2: Join contest
-    const resParticipant = await fetch("http://localhost:8080/api/contest-participants", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: user.id,
-        contestId,
-      }),
-    });
-
-    if (!resParticipant.ok) throw new Error("Failed to join contest");
-    const participant = await resParticipant.json(); // ✅ either existing or new
-
-    console.log("Joined contest:", participant);
-    localStorage.removeItem("participant");
-    localStorage.setItem("participant", JSON.stringify(participant));
-
-    // Step 3: Navigate to contest page
-    navigate(`/contest/${contestId}`);
-  } catch (err) {
-    setError(err.message);
-  }
-};
-
-
-
+  if (loading) return <p className="text-gray-500 text-center mt-10">Loading contests...</p>;
+  if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg flex flex-col h-[90vh]">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 p-4">
+      <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-2xl flex flex-col h-[90vh]">
+
         {/* Form */}
-        <div>
-          <h1 className="text-2xl font-bold mb-4 text-center">Join Contest</h1>
-          <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">Join a Contest</h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
             <input
               type="text"
               placeholder="Contest ID"
-              value={contestId}
-              onChange={(e) => setContestId(e.target.value)}
-              className="w-full p-3 border rounded-lg"
+              value={selectedSimpleId}             // ✅ the simple ID
+              onChange={(e) => setSelectedSimpleId(e.target.value)} // update state
+              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
+
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg"
+              className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow hover:bg-indigo-700 transition transform hover:scale-105"
             >
-              Join
+              Join Contest
             </button>
           </form>
         </div>
 
         {/* Contest List */}
-        <div className="mt-6 flex-1 flex flex-col">
-          <h1 className="text-xl font-bold mb-2">Available Contests</h1>
-          <ul className="space-y-2 overflow-y-auto pr-2 flex-1">
+        <div className="flex-1 flex flex-col">
+          <h2 className="text-2xl font-semibold mb-3 text-gray-700">Available Contests</h2>
+          <ul className="space-y-2">
             {contests.map((contest) => (
               <li
                 key={contest.id}
-                className="p-3 border rounded-lg bg-gray-50 flex justify-between items-center"
+                className="p-4 border rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 flex justify-between items-center shadow hover:shadow-lg transition transform hover:scale-102"
               >
-                <span className="font-medium">{contest.name}</span>
-                <span className="text-sm text-gray-500">{contest.id}</span>
+                <span className="font-medium text-indigo-800">{contest.name}</span>
+                <span className="text-sm text-gray-500">ID: {contest.simpleId}</span>
               </li>
             ))}
           </ul>

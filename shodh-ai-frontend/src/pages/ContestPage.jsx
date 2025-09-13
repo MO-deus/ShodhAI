@@ -24,38 +24,59 @@ export default function ContestPage() {
       });
   }, [contestId]);
 
-  if (loading) return <p className="text-gray-500">Loading problems...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
-
-  console.log(contestId);
-  
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-500 text-lg">
+        Loading problems...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-screen text-red-500 text-lg">
+        Error: {error}
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 p-6">
+      {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="mb-6 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+        className="mb-6 px-4 py-2 bg-gray-200 rounded-xl hover:bg-gray-300 transition"
       >
         ⬅ Back
       </button>
 
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Contest {contestId}</h1>
+      {/* Contest Header */}
+      <h1 className="text-3xl md:text-4xl font-bold mb-6 text-indigo-700">
+        Contest {contestId}
+      </h1>
 
+      {/* Problems Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {questions.map((q) => (
           <Link
             key={q.id}
             to={`/contest/${contestId}/problem/${q.id}`}
-            className="block p-6 bg-white rounded-xl shadow hover:shadow-lg border border-gray-200 transition"
+            className="block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-200 transition transform hover:-translate-y-1 hover:scale-105"
           >
-            <h2 className="text-lg font-semibold">{q.title}</h2>
+            <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+              {q.title}
+            </h2>
+            <p className="mt-2 text-gray-500">{q.description?.slice(0, 80)}...</p>
           </Link>
         ))}
       </div>
 
-      <Link to={`/contest/${contestId}/leaderboard`}>
-        View Leaderboard
-      </Link>
+      {/* Leaderboard Button */}
+      <div className="mt-8 flex justify-center">
+        <Link
+          to={`/contest/${contestId}/leaderboard`}
+          className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-2xl shadow-lg hover:from-purple-500 hover:to-indigo-500 transition transform hover:scale-105"
+        >
+          View Leaderboard
+        </Link>
+      </div>
     </div>
   );
 }
