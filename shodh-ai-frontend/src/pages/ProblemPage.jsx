@@ -40,7 +40,9 @@ useEffect(() => {
 const handleRun = async () => {
   setLoading(true);
   try {
-    const participant = JSON.parse(localStorage.getItem("participant"));
+    const participant = JSON.parse(localStorage.getItem("participant")); 
+    console.log(participant);
+    
 
     const response = await fetch(
       `http://localhost:8080/api/problems/${problemId}/submit`,
@@ -60,9 +62,9 @@ const handleRun = async () => {
     
     const data = await response.json();
     
-    const parsedResults = data.results;
-    console.log(parsedResults);
-    setResults(parsedResults || []);
+    // const parsedResults = data.results;
+    // console.log(parsedResults);
+    setResults(data.judgeResponse.results || []);
   } catch (err) {
     console.error(err);
     setResults([{ error: "Failed to run code" }]);

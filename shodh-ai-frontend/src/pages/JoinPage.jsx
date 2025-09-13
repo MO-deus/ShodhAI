@@ -58,6 +58,8 @@ const handleSubmit = async (e) => {
     const participant = await resParticipant.json(); // ✅ either existing or new
 
     console.log("Joined contest:", participant);
+    localStorage.removeItem("participant");
+    localStorage.setItem("participant", JSON.stringify(participant));
 
     // Step 3: Navigate to contest page
     navigate(`/contest/${contestId}`);

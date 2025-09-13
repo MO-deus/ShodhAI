@@ -71,13 +71,39 @@ public class ProblemController {
                 ResponseEntity<String> response =
                         restTemplate.exchange(judgeUrl, HttpMethod.POST, entity, String.class);
 
-                // Just return the raw response for now
-
+                // Parse judge response
                 ObjectMapper mapper = new ObjectMapper();
-                Map<String, Object> judgeResponse = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {});
-                System.out.println(judgeResponse);
-                return ResponseEntity.ok(judgeResponse);
-//                return ResponseEntity.ok(Map.of("result", response.getBody()));
+                Map<String, Object> judgeResponse = mapper.readValue(
+                        response.getBody(),
+                        new TypeReference<Map<String, Object>>() {}
+                );
+
+                // Determine status: Accepted if all test cases passed
+                List<Map<String, Object>> testResults = (List<Map<String, Object>>) judgeResponse.get("results");
+                boolean allPassed = testResults.stream()
+                        .allMatch(r -> Boolean.TRUE.equals(r.get("passed")));
+                String status = allPassed ? "Accepted" : "Wrong Answer";
+
+                // Save submission to DB
+                Submission submission = new Submission();
+                submission.setProblemId(problemId);
+                submission.setContestId(submissionDTO.getContestId());
+                submission.setUserId(submissionDTO.getUserId());
+                submission.setLanguage(submissionDTO.getLanguage());
+                submission.setCode(submissionDTO.getCode().replace("\r", ""));
+                submission.setStatus(status);
+                submission.setOutput(response.getBody());  // save raw judge output
+                submission.setSubmittedAt(LocalDateTime.now());
+
+                submissionRepository.save(submission);
+
+                // Return the judge response along with submission status
+                Map<String, Object> result = Map.of(
+                        "submission", submission,
+                        "judgeResponse", judgeResponse
+                );
+
+                return ResponseEntity.ok(result);
 
             } catch (Exception e) {
                 return ResponseEntity.status(500)
@@ -85,8 +111,5 @@ public class ProblemController {
             }
         }).orElse(ResponseEntity.notFound().build());
     }
-
-
-
 
 }

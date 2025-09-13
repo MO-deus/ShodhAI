@@ -1,13 +1,13 @@
 package com.example.shodh_ai_backend.controller;
 
+import com.example.shodh_ai_backend.dto.LeaderboardEntry;
 import com.example.shodh_ai_backend.model.Contest;
+import com.example.shodh_ai_backend.model.Submission;
 import com.example.shodh_ai_backend.repository.ContestRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/contests")
@@ -33,4 +33,5 @@ public class ContestController {
         List<Contest> contests = contestRepository.findAll();
         return ResponseEntity.ok(contests);
     }
+    
 }
